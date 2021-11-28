@@ -4,10 +4,10 @@ import {render, Text, Box} from 'ink';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { BYTES_PER_LINE, SCREEN_W, toHex } from './utils';
-import { useBuffer } from './use-buffer';
-import { useMovement } from './use-movement';
-import { useByteEdit } from './use-byte-edit';
-import { useSave } from './use-save';
+import { useBuffer } from './hooks/use-buffer';
+import { useMovement } from './hooks/use-movement';
+import { useByteEdit } from './hooks/use-byte-edit';
+import { useSave } from './hooks/use-save';
 
 if (process.argv.length < 3) {
   console.log('Usage: betwitched <input file>');

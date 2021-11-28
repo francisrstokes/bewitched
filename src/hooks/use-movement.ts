@@ -1,4 +1,3 @@
-import { BYTES_PER_LINE, SetStateFn } from "./utils";
 import {useInput} from 'ink';
 import { CursorCommands } from "./use-buffer";
 

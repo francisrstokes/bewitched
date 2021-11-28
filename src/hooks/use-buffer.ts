@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { BYTES_PER_LINE } from "./utils";
+import { BYTES_PER_LINE } from "../utils";
 
 export type CursorCommands = {
   left: () => void;

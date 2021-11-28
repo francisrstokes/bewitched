@@ -1,4 +1,3 @@
-import { SetStateFn } from "./utils";
 import {useInput} from 'ink';
 import { useState } from "react";
 
