@@ -8,6 +8,12 @@ export type CursorCommands = {
   down: () => void;
 };
 
+export type BufferCommands = {
+  insertAtCursor: (bytes: Uint8Array) => void;
+  insertAfterCursor: (bytes: Uint8Array) => void;
+  delete: () => void;
+};
+
 const cursorIsVisible = (cursor: number, offset: number) => (
   cursor >= offset && cursor < (offset + HEXVIEW_H * BYTES_PER_LINE)
 );
@@ -48,12 +54,54 @@ export const useBuffer = () => {
     },
   };
 
+  const insertAtCursor = (bytes: Uint8Array) => {
+    const newSize = buffer.byteLength + bytes.byteLength;
+    const newBuffer = new Uint8Array(newSize);
+
+    newBuffer.set(buffer.slice(0, cursor), 0);
+    newBuffer.set(bytes, cursor);
+    newBuffer.set(buffer.slice(cursor + bytes.byteLength - 1), cursor + bytes.byteLength);
+
+    setBuffer(newBuffer);
+  };
+
+  const insertAfterCursor = (bytes: Uint8Array) => {
+    const newSize = buffer.byteLength + bytes.byteLength;
+    const newBuffer = new Uint8Array(newSize);
+
+    newBuffer.set(buffer.slice(0, cursor + 1), 0);
+    newBuffer.set(bytes, cursor + 1);
+    newBuffer.set(buffer.slice(cursor + bytes.byteLength), cursor + bytes.byteLength + 1);
+
+    setBuffer(newBuffer);
+  };
+
+  const deleteByte = () => {
+    if (buffer.byteLength === 0) return;
+
+    const newSize = buffer.byteLength - 1;
+    const newBuffer = new Uint8Array(newSize);
+
+    newBuffer.set(buffer.slice(0, cursor), 0);
+    newBuffer.set(buffer.slice(cursor + 1), cursor);
+
+    setBuffer(newBuffer);
+    setCursor(Math.min(newSize, cursor));
+  }
+
+  const bufferCommands: BufferCommands = {
+    insertAtCursor,
+    insertAfterCursor,
+    delete: deleteByte
+  };
+
   return {
     buffer,
     setBuffer,
     cursor,
     setCursor,
     cursorCommands,
+    bufferCommands,
     offset,
   };
 }

@@ -6,7 +6,7 @@ import * as path from 'path';
 import { BYTES_PER_LINE, HEXVIEW_H, SCREEN_W, toHex } from './utils';
 import { useBuffer } from './hooks/use-buffer';
 import { useMovement } from './hooks/use-movement';
-import { useByteEdit } from './hooks/use-byte-edit';
+import { useEdit } from './hooks/use-edit';
 import { useSave } from './hooks/use-save';
 
 if (process.argv.length < 3) {
@@ -69,15 +69,15 @@ const StatusInfo = ({ buffer, cursor }: StatusInfoProps) => {
 const App = () => {
   const {
     buffer,
-    setBuffer,
     cursor,
+    offset,
     cursorCommands,
-    offset
+    bufferCommands,
   } = useBuffer();
 
   useEffect(() => {
     fs.readFile(inputFile).then(file => {
-      setBuffer(new Uint8Array(file.buffer));
+      bufferCommands.insertAtCursor(new Uint8Array(file.buffer));
     });
   }, []);
 
@@ -86,8 +86,9 @@ const App = () => {
     enabled: true
   });
 
-  useByteEdit({
+  useEdit({
     buffer,
+    bufferCommands,
     cursor,
     moveCursorRight: cursorCommands.right,
     enabled: true
@@ -100,15 +101,8 @@ const App = () => {
   });
 
   return <Box flexDirection='column'>
-    <HexView
-      buffer={buffer}
-      offset={offset}
-      cursor={cursor}
-    />
-    <StatusInfo
-      buffer={buffer}
-      cursor={cursor}
-    />
+    <HexView buffer={buffer} offset={offset} cursor={cursor} />
+    <StatusInfo buffer={buffer} cursor={cursor} />
   </Box>;
 };
 
