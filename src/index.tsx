@@ -40,13 +40,20 @@ const HexView = ({ buffer, cursor, offset: startOffset }: HexViewProps) => {
       }
       return <Text key={offset + i}>{toHex(byte, 2)} </Text>;
     });
+
+    if (bytes.length < BYTES_PER_LINE) {
+      const diff = BYTES_PER_LINE - bytes.length;
+      const padding = <Text key='padding'>{'   '.repeat(diff)}</Text>;
+      bytes.push(padding);
+    }
+
     const bytesComponent = <Box>{bytes}</Box>;
     const asciiComponent = <Text>|{slice.map(byte => {
       if (byte >= 0x20 && byte < 0x7f) {
         return String.fromCharCode(byte);
       }
       return '.';
-    }).join('')}|</Text>;
+    }).join('').padEnd(BYTES_PER_LINE, '.')}|</Text>;
 
     lines.push(<Box key={offset}>{offsetComponent}{bytesComponent}{asciiComponent}</Box>);
   }
