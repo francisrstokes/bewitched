@@ -3,7 +3,7 @@ import {render, Text, Box} from 'ink';
 
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { BYTES_PER_LINE, toHex } from './utils';
+import { BYTES_PER_LINE, SCREEN_W, toHex } from './utils';
 import { useBuffer } from './use-buffer';
 import { useMovement } from './use-movement';
 import { useByteEdit } from './use-byte-edit';
@@ -14,7 +14,9 @@ if (process.argv.length < 3) {
   process.exit(1);
 }
 
-const inputFile = path.join(process.cwd(), process.argv[2]);
+const inputFile = path.isAbsolute(process.argv[2])
+  ? process.argv[2]
+  : path.join(process.cwd(), process.argv[2]);
 
 type HexViewProps = {
   buffer: Uint8Array;
@@ -52,12 +54,24 @@ const HexView = ({ buffer, cursor }: HexViewProps) => {
   return <Box flexDirection='column'>{lines}</Box>;
 }
 
+type StatusInfoProps = {
+  buffer: Uint8Array;
+  cursor: number;
+}
+const StatusInfo = ({ buffer, cursor }: StatusInfoProps) => {
+  return <Box flexDirection='column'>
+    <Text>{'-'.repeat(SCREEN_W)}</Text>
+    <Text> Offset [<Text bold>{toHex(cursor, 8)}</Text>]</Text>
+    <Text>{'-'.repeat(SCREEN_W)}</Text>
+  </Box>
+}
+
 const App = () => {
   const {
     buffer,
     setBuffer,
     cursor,
-    setCursor
+    cursorCommands
   } = useBuffer();
 
   useEffect(() => {
@@ -67,16 +81,14 @@ const App = () => {
   }, []);
 
   useMovement({
-    buffer,
-    cursor,
-    setCursor,
+    cursorCommands,
     enabled: true
   });
 
   useByteEdit({
     buffer,
     cursor,
-    setBuffer,
+    moveCursorRight: cursorCommands.right,
     enabled: true
   });
 
@@ -86,10 +98,16 @@ const App = () => {
     enabled: true
   });
 
-  return <HexView
-    buffer={buffer}
-    cursor={cursor}
-  />;
+  return <Box flexDirection='column'>
+    <HexView
+      buffer={buffer}
+      cursor={cursor}
+    />
+    <StatusInfo
+      buffer={buffer}
+      cursor={cursor}
+    />
+  </Box>;
 };
 
 render(<App />);

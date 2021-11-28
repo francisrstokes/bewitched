@@ -8,10 +8,10 @@ const isHexChar = (char: string) => hexRegex.test(char);
 type ByteEditParams = {
   cursor: number;
   buffer: Uint8Array;
-  setBuffer: SetStateFn<Uint8Array>;
+  moveCursorRight: () => void;
   enabled: boolean;
 }
-export const useByteEdit = ({cursor, setBuffer, buffer, enabled}: ByteEditParams) => {
+export const useByteEdit = ({cursor, moveCursorRight, buffer, enabled}: ByteEditParams) => {
   const [isMSN, setIsMSN] = useState(true);
   useInput((input, key) => {
     if (isHexChar(input)) {
@@ -20,6 +20,7 @@ export const useByteEdit = ({cursor, setBuffer, buffer, enabled}: ByteEditParams
         buffer[cursor] = (value << 4) | (buffer[cursor] & 0x0f);
       } else {
         buffer[cursor] = (buffer[cursor] & 0xf0) | value;
+        moveCursorRight();
       }
       setIsMSN(!isMSN);
       return;
