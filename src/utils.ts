@@ -10,5 +10,6 @@ export type SetStateFn<T> = (x: T) => void;
 export enum AppState {
   Edit = 'Edit',
   Save = 'Save',
-  Help = 'Help'
+  Help = 'Help',
+  Jump = 'Jump'
 };

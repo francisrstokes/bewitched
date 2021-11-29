@@ -7,6 +7,7 @@ type InputFieldProps = {
   onEscape?: (data: string) => void | Promise<void>;
   initialValue?: string;
   label?: string;
+  mask?: RegExp;
 }
 export const InputField = ({
   label = '',
@@ -14,6 +15,7 @@ export const InputField = ({
   onEnter = () => void 0,
   onChange = () => void 0,
   onEscape = () => void 0,
+  mask
 }: InputFieldProps) => {
   const [value, setValue] = useState(initialValue);
   const [cursor, setCursor] = useState(initialValue.length);
@@ -30,6 +32,11 @@ export const InputField = ({
       const part1 = value.slice(0, cursor - 1);
       const part2 = value.slice(cursor);
       const newValue = part1 + part2;
+
+      if (mask && !mask.test(newValue)) {
+        return;
+      }
+
       setValue(newValue);
       setCursor(cursor - 1);
       onChange(newValue);
@@ -46,6 +53,11 @@ export const InputField = ({
       const part1 = value.slice(0, cursor);
       const part2 = value.slice(cursor);
       const newValue = part1 + input + part2;
+
+      if (mask && !mask.test(newValue)) {
+        return;
+      }
+
       setValue(newValue);
       setCursor(cursor + input.length);
       onChange(newValue);

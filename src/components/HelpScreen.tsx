@@ -13,6 +13,7 @@ export const HelpScreen = ({ exit }: HelpScreenProps) => {
     ['Del/Backspace', ' Delete the currently selected byte'],
     ['i            ', ' Insert a zero byte before the cursor'],
     ['I            ', ' Insert a zero byte after the cursor'],
+    ['j            ', ' Jump to a specific offset in the file'],
     ['Ctrl+S       ', ' Save this file'],
     ['Esc          ', ' Exit any menu'],
     ['?            ', ' Show this help menu'],

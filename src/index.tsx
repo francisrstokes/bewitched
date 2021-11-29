@@ -11,6 +11,7 @@ import { HexView } from './components/HexView';
 import { HelpScreen } from './components/HelpScreen';
 import { SaveDialog } from './components/SaveDialog';
 import { StatusInfo } from './components/StatusInfo';
+import { JumpDialog } from './components/JumpDialog';
 
 if (process.argv.length < 3) {
   console.log('Usage: betwitched <input file>');
@@ -28,6 +29,7 @@ const App = () => {
     offset,
     cursorCommands,
     bufferCommands,
+    jumpToOffset
   } = useBuffer();
 
   const [appState, setAppState] = useState<AppState>(AppState.Edit);
@@ -57,9 +59,14 @@ const App = () => {
       <HexView buffer={buffer} offset={offset} cursor={cursor} />
       <Box flexDirection='column'>
         <Text>{'-'.repeat(SCREEN_W)}</Text>
-          {appState === AppState.Edit
-            ? <StatusInfo buffer={buffer} cursor={cursor} />
-            : <SaveDialog buffer={buffer} openFilePath={inputFile} setAppState={setAppState} />
+          {
+              appState === AppState.Edit
+              ? <StatusInfo buffer={buffer} cursor={cursor} />
+            : appState === AppState.Save
+              ?<SaveDialog buffer={buffer} openFilePath={inputFile} setAppState={setAppState} />
+            : appState === AppState.Jump
+              ? <JumpDialog jumpToOffsset={jumpToOffset} setAppState={setAppState} />
+            : null
           }
         <Text>{'-'.repeat(SCREEN_W)}</Text>
       </Box>
