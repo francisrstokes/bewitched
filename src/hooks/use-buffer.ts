@@ -90,7 +90,7 @@ export const useBuffer = () => {
     newBuffer.set(buffer.slice(cursor + 1), cursor);
 
     setBuffer(newBuffer);
-    setCursor(Math.min(newSize, cursor));
+    setCursor(Math.max(0, Math.min(newSize-1, cursor)));
   }
 
   const bufferCommands: BufferCommands = {
