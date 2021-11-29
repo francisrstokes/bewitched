@@ -25,31 +25,35 @@ export const useBuffer = () => {
 
   const cursorCommands: CursorCommands = {
     left: () => {
+      if (buffer.byteLength === 0) return;
       const newValue = Math.max(0, cursor - 1);
       setCursor(newValue);
       if (!cursorIsVisible(newValue, offset)) {
-        setOffset(offset - BYTES_PER_LINE);
+        setOffset(Math.max(0, offset - BYTES_PER_LINE));
       }
     },
     up: () => {
+      if (buffer.byteLength === 0) return;
       const newValue = Math.max(0, cursor - BYTES_PER_LINE);
       setCursor(newValue);
       if (!cursorIsVisible(newValue, offset)) {
-        setOffset(offset - BYTES_PER_LINE);
+        setOffset(Math.max(0, offset - BYTES_PER_LINE));
       }
     },
     right: () => {
+      if (buffer.byteLength === 0) return;
       const newValue = Math.min(buffer.byteLength - 1, cursor + 1);
       setCursor(newValue);
       if (!cursorIsVisible(newValue, offset)) {
-        setOffset(offset + BYTES_PER_LINE);
+        setOffset(Math.min(Math.max(0, buffer.byteLength - 1), offset + BYTES_PER_LINE));
       }
     },
     down: () => {
+      if (buffer.byteLength === 0) return;
       const newValue = Math.min(buffer.byteLength - 1, cursor + BYTES_PER_LINE);
       setCursor(newValue);
       if (!cursorIsVisible(newValue, offset)) {
-        setOffset(offset + BYTES_PER_LINE);
+        setOffset(Math.min(buffer.byteLength - 1, offset + BYTES_PER_LINE));
       }
     },
   };
