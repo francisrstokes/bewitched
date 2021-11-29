@@ -46,6 +46,10 @@ export const useEdit = ({
       return;
     }
 
+    if (input === '?') {
+      return setAppState(AppState.Help);
+    }
+
     if (key.delete || key.backspace) {
       bufferCommands.delete();
       setIsMSN(true);

@@ -9,5 +9,6 @@ export const toHex = (n: number, l: number) => n.toString(16).padStart(l, '0');
 export type SetStateFn<T> = (x: T) => void;
 export enum AppState {
   Edit = 'Edit',
-  Save = 'Save'
+  Save = 'Save',
+  Help = 'Help'
 };

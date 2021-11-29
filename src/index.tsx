@@ -1,6 +1,6 @@
 #!node
 import React, {useEffect, useState} from 'react';
-import {render, Text, Box} from 'ink';
+import {render, Text, Box, useInput} from 'ink';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
@@ -75,8 +75,51 @@ type StatusInfoProps = {
   buffer: Uint8Array;
   cursor: number;
 }
-const StatusInfo = ({ cursor }: StatusInfoProps) => {
-  return <Text> Offset [<Text bold>{toHex(cursor, 8)}</Text>]</Text>;
+const StatusInfo = ({ buffer, cursor }: StatusInfoProps) => {
+  return <Box>
+    <Text> Offset [<Text bold>{toHex(cursor, 8)}</Text>]</Text>
+    <Text bold> ({buffer.byteLength === 0 ? '-' : buffer[cursor]})</Text>
+    <Text> [<Text bold>?</Text>] Help</Text>
+  </Box>;
+}
+
+type HelpScreenProps = { exit: () => void; }
+const HelpScreen = ({ exit }: HelpScreenProps) => {
+
+  useInput((_, key) => {
+    if (key.escape) exit();
+  });
+
+  const helpItems: Array<[string, string]> = [
+    ['←↑↓→         ', ' Move the cursor'],
+    ['[a-f0-9]     ', ' Edit the currently selected byte'],
+    ['Del/Backspace', ' Delete the currently selected byte'],
+    ['i            ', ' Insert a zero byte before the cursor'],
+    ['I            ', ' Insert a zero byte after the cursor'],
+    ['Ctrl+S       ', ' Save this file'],
+    ['Esc          ', ' Exit any menu'],
+    ['?            ', ' Show this help menu'],
+  ];
+
+  return <Box
+    flexDirection='column'
+    height={25}
+    width={80}
+    borderStyle='doubleSingle'
+    paddingLeft={1}
+    paddingRight={1}
+  >
+    <Box justifyContent='center' paddingBottom={2}>
+      <Text bold underline>Bewitched :: Help</Text>
+    </Box>
+
+    {helpItems.map(([key, text]) => (
+      <Box key={key}>
+        <Text bold>{key}</Text>
+        <Text>{text}</Text>
+      </Box>
+    ))}
+  </Box>;
 }
 
 type SaveDialogProps = {
@@ -130,17 +173,19 @@ const App = () => {
     enabled: appState === AppState.Edit,
   });
 
-  return <Box flexDirection='column'>
-    <HexView buffer={buffer} offset={offset} cursor={cursor} />
+  return appState === AppState.Help ? <HelpScreen exit={() => setAppState(AppState.Edit)} /> : (
     <Box flexDirection='column'>
-      <Text>{'-'.repeat(SCREEN_W)}</Text>
-        {appState === AppState.Edit
-          ? <StatusInfo buffer={buffer} cursor={cursor} />
-          : <SaveDialog buffer={buffer} setAppState={setAppState} />
-        }
-      <Text>{'-'.repeat(SCREEN_W)}</Text>
+      <HexView buffer={buffer} offset={offset} cursor={cursor} />
+      <Box flexDirection='column'>
+        <Text>{'-'.repeat(SCREEN_W)}</Text>
+          {appState === AppState.Edit
+            ? <StatusInfo buffer={buffer} cursor={cursor} />
+            : <SaveDialog buffer={buffer} setAppState={setAppState} />
+          }
+        <Text>{'-'.repeat(SCREEN_W)}</Text>
+      </Box>
     </Box>
-  </Box>;
+  );
 };
 
 render(<App />);
