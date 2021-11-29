@@ -40,18 +40,20 @@ const HexView = ({ buffer, cursor, offset: startOffset }: HexViewProps) => {
 
     const offsetComponent = <Text bold>{toHex(offset, 8)}: </Text>;
     const bytes = slice.map((byte, i) => {
+      const spacing = ((i + 1) % 4 === 0) ? '  ' : ' ';
       if (offset + i === cursor) {
         return <Box key={offset + i}>
           <Text backgroundColor='white' color='black'>{toHex(byte, 2)}</Text>
-          <Text> </Text>
+          <Text>{spacing}</Text>
         </Box>;
       }
-      return <Text key={offset + i}>{toHex(byte, 2)} </Text>;
+      return <Text key={offset + i}>{toHex(byte, 2)}{spacing}</Text>;
     });
 
     if (bytes.length < BYTES_PER_LINE) {
+      const wordSpaces = 4 - Math.floor(bytes.length / 4);
       const diff = BYTES_PER_LINE - bytes.length;
-      const padding = <Text key='padding'>{'   '.repeat(diff)}</Text>;
+      const padding = <Text key='padding'>{'   '.repeat(diff)}{' '.repeat(wordSpaces)}</Text>;
       bytes.push(padding);
     }
 
