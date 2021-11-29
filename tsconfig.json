@@ -4,9 +4,10 @@
     "noImplicitAny": true,
     "removeComments": false,
     "preserveConstEnums": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "target": "ESNext",
     "esModuleInterop": true,
-    "jsx": "react"
+    "jsx": "react",
+    "outDir": "dist"
   },
 }

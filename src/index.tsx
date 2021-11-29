@@ -1,3 +1,4 @@
+#!node
 import React, {useEffect, useState} from 'react';
 import {render, Text, Box} from 'ink';
 import * as fs from 'fs/promises';
