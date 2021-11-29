@@ -1,13 +1,20 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {render, Text, Box} from 'ink';
-
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { BYTES_PER_LINE, HEXVIEW_H, SCREEN_W, toHex } from './utils';
+
+import {
+  AppState,
+  BYTES_PER_LINE,
+  HEXVIEW_H,
+  SCREEN_W,
+  SetStateFn,
+  toHex
+} from './utils';
+import { InputField } from './InputField';
 import { useBuffer } from './hooks/use-buffer';
 import { useMovement } from './hooks/use-movement';
 import { useEdit } from './hooks/use-edit';
-import { useSave } from './hooks/use-save';
 
 if (process.argv.length < 3) {
   console.log('Usage: betwitched <input file>');
@@ -65,12 +72,28 @@ type StatusInfoProps = {
   buffer: Uint8Array;
   cursor: number;
 }
-const StatusInfo = ({ buffer, cursor }: StatusInfoProps) => {
-  return <Box flexDirection='column'>
-    <Text>{'-'.repeat(SCREEN_W)}</Text>
-    <Text> Offset [<Text bold>{toHex(cursor, 8)}</Text>]</Text>
-    <Text>{'-'.repeat(SCREEN_W)}</Text>
-  </Box>
+const StatusInfo = ({ cursor }: StatusInfoProps) => {
+  return <Text> Offset [<Text bold>{toHex(cursor, 8)}</Text>]</Text>;
+}
+
+type SaveDialogProps = {
+  buffer: Uint8Array;
+  setAppState: SetStateFn<AppState>;
+}
+const SaveDialog = ({ buffer, setAppState }: SaveDialogProps) => {
+  return <InputField
+    label='Filepath: '
+    initialValue={inputFile}
+    onEnter={filepath => {
+      fs.writeFile(filepath, buffer)
+        .then(() => setAppState(AppState.Edit))
+        .catch(() => {
+          // TODO: Handle this better
+          setAppState(AppState.Edit);
+        });
+    }}
+    onEscape={() => setAppState(AppState.Edit)}
+  />;
 }
 
 const App = () => {
@@ -82,6 +105,8 @@ const App = () => {
     bufferCommands,
   } = useBuffer();
 
+  const [appState, setAppState] = useState<AppState>(AppState.Edit);
+
   useEffect(() => {
     fs.readFile(inputFile).then(file => {
       bufferCommands.insertAtCursor(new Uint8Array(file.buffer));
@@ -90,7 +115,7 @@ const App = () => {
 
   useMovement({
     cursorCommands,
-    enabled: true
+    enabled: appState === AppState.Edit
   });
 
   useEdit({
@@ -98,18 +123,20 @@ const App = () => {
     bufferCommands,
     cursor,
     moveCursorRight: cursorCommands.right,
-    enabled: true
-  });
-
-  useSave({
-    buffer,
-    outputFilepath: inputFile,
-    enabled: true
+    setAppState,
+    enabled: appState === AppState.Edit,
   });
 
   return <Box flexDirection='column'>
     <HexView buffer={buffer} offset={offset} cursor={cursor} />
-    <StatusInfo buffer={buffer} cursor={cursor} />
+    <Box flexDirection='column'>
+      <Text>{'-'.repeat(SCREEN_W)}</Text>
+        {appState === AppState.Edit
+          ? <StatusInfo buffer={buffer} cursor={cursor} />
+          : <SaveDialog buffer={buffer} setAppState={setAppState} />
+        }
+      <Text>{'-'.repeat(SCREEN_W)}</Text>
+    </Box>
   </Box>;
 };
 

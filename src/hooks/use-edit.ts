@@ -1,5 +1,6 @@
 import {useInput} from 'ink';
 import { useState } from "react";
+import { AppState, SetStateFn } from '../utils';
 import { BufferCommands } from './use-buffer';
 
 const hexRegex = /[0-9a-f]/;
@@ -15,9 +16,17 @@ type EditParams = {
   buffer: Uint8Array;
   bufferCommands: BufferCommands;
   moveCursorRight: () => void;
+  setAppState: SetStateFn<AppState>;
   enabled: boolean;
 }
-export const useEdit = ({cursor, moveCursorRight, bufferCommands, buffer, enabled}: EditParams) => {
+export const useEdit = ({
+  cursor,
+  moveCursorRight,
+  bufferCommands,
+  buffer,
+  setAppState,
+  enabled
+}: EditParams) => {
   const [isMSN, setIsMSN] = useState(true);
   useInput((input, key) => {
     if (isHexChar(input)) {
@@ -38,12 +47,26 @@ export const useEdit = ({cursor, moveCursorRight, bufferCommands, buffer, enable
     }
 
     if (key.delete || key.backspace) {
-      return bufferCommands.delete();
+      bufferCommands.delete();
+      setIsMSN(true);
+      return;
     }
 
     switch (input) {
-      case CommandChar.InsertByteAtCursor: return bufferCommands.insertAtCursor(new Uint8Array([0]));
-      case CommandChar.InsertByteAfterCursor: return bufferCommands.insertAfterCursor(new Uint8Array([0]));
+      case CommandChar.InsertByteAtCursor: {
+        bufferCommands.insertAtCursor(new Uint8Array([0]));
+        setIsMSN(true);
+        return;
+      }
+      case CommandChar.InsertByteAfterCursor: {
+        bufferCommands.insertAfterCursor(new Uint8Array([0]));
+        setIsMSN(true);
+        return;
+      }
+    }
+
+    if (key.ctrl && input === 's') {
+      return setAppState(AppState.Save);
     }
   }, {isActive: enabled});
 }
