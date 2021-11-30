@@ -8,6 +8,7 @@
     "target": "ESNext",
     "esModuleInterop": true,
     "jsx": "react",
-    "outDir": "dist"
+    "outDir": "bin",
   },
+  "include": ["./src/**/*"]
 }

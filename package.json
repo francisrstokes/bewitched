@@ -2,12 +2,13 @@
   "name": "bewitched",
   "version": "0.1.0",
   "description": "🧙🏻 Command line hex editor",
-  "main": "dist/src/index.js",
+  "main": "bin/index.js",
   "bin": {
-    "bewitched": "./dist/src/index.js"
+    "bewitched": "./bin/index.js"
   },
   "scripts": {
-    "build": "tsc && chmod +x ./dist/src/index.js"
+    "build": "tsc && chmod +x ./bin/index.js",
+    "prepack": "npm run build"
   },
   "keywords": [],
   "author": "Francis Stokes",
