@@ -18,9 +18,7 @@ if (process.argv.length < 3) {
   process.exit(1);
 }
 
-const inputFile = path.isAbsolute(process.argv[2])
-  ? process.argv[2]
-  : path.join(process.cwd(), process.argv[2]);
+const inputFile = path.resolve(process.argv[2]);
 
 const App = () => {
   const {
