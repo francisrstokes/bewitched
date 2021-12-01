@@ -7,9 +7,10 @@ import * as path from 'path';
 type SaveDialogProps = {
   buffer: Uint8Array;
   setAppState: SetStateFn<AppState>;
+  setErrorMsg: SetStateFn<string>;
   openFilePath: string;
 }
-export const SaveDialog = ({ buffer, setAppState, openFilePath }: SaveDialogProps) => {
+export const SaveDialog = ({ buffer, setAppState, setErrorMsg, openFilePath }: SaveDialogProps) => {
   return <InputField
     label='Filepath: '
     initialValue={openFilePath}
@@ -17,8 +18,8 @@ export const SaveDialog = ({ buffer, setAppState, openFilePath }: SaveDialogProp
       fs.writeFile(path.resolve(filepath), buffer)
         .then(() => setAppState(AppState.Edit))
         .catch(() => {
-          // TODO: Handle this better
-          setAppState(AppState.Edit);
+          setErrorMsg(`Error when saving file [${filepath}]`);
+          setAppState(AppState.Error);
         });
     }}
     onEscape={() => setAppState(AppState.Edit)}

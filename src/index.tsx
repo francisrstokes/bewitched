@@ -12,6 +12,7 @@ import { HelpScreen } from './components/HelpScreen';
 import { SaveDialog } from './components/SaveDialog';
 import { StatusInfo } from './components/StatusInfo';
 import { JumpDialog } from './components/JumpDialog';
+import { ErrorDialog } from './components/ErrorDialog';
 
 if (process.argv.length < 3) {
   console.log('Usage: betwitched <input file>');
@@ -30,6 +31,7 @@ const App = () => {
     jumpToOffset
   } = useBuffer();
 
+  const [errorMsg, setErrorMsg] = useState('');
   const [appState, setAppState] = useState<AppState>(AppState.Edit);
 
   useEffect(() => {
@@ -61,9 +63,11 @@ const App = () => {
               appState === AppState.Edit
               ? <StatusInfo buffer={buffer} cursor={cursor} />
             : appState === AppState.Save
-              ?<SaveDialog buffer={buffer} openFilePath={inputFile} setAppState={setAppState} />
+              ?<SaveDialog buffer={buffer} openFilePath={inputFile} setErrorMsg={setErrorMsg} setAppState={setAppState} />
             : appState === AppState.Jump
               ? <JumpDialog jumpToOffsset={jumpToOffset} setAppState={setAppState} />
+            : appState === AppState.Error
+              ? <ErrorDialog error={errorMsg} setAppState={setAppState} />
             : null
           }
         <Text>{'-'.repeat(SCREEN_W)}</Text>
