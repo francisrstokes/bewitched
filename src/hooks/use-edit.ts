@@ -1,5 +1,5 @@
-import {useInput} from 'ink';
-import { useState } from "react";
+import { useInput } from 'ink';
+import { useEffect, useState } from "react";
 import { AppState, SetStateFn } from '../utils';
 import { BufferCommands } from './use-buffer';
 
@@ -28,6 +28,11 @@ export const useEdit = ({
   enabled
 }: EditParams) => {
   const [isMSN, setIsMSN] = useState(true);
+
+  useEffect(() => {
+    setIsMSN(true);
+  }, [cursor]);
+
   useInput((input, key) => {
     if (isHexChar(input)) {
       const value = parseInt(input, 16);
@@ -41,11 +46,6 @@ export const useEdit = ({
       return;
     }
 
-    if (key.leftArrow || key.rightArrow || key.upArrow || key.downArrow) {
-      setIsMSN(true);
-      return;
-    }
-
     if (input === '?') {
       return setAppState(AppState.Help);
     }
@@ -56,7 +56,6 @@ export const useEdit = ({
 
     if (key.delete || key.backspace) {
       bufferCommands.delete();
-      setIsMSN(true);
       return;
     }
 
