@@ -31,7 +31,7 @@ export const useEdit = ({
 
   useEffect(() => {
     setIsMSN(true);
-  }, [cursor]);
+  }, [cursor, buffer]);
 
   useInput((input, key) => {
     if (isHexChar(input)) {
@@ -62,12 +62,10 @@ export const useEdit = ({
     switch (input) {
       case CommandChar.InsertByteAtCursor: {
         bufferCommands.insertAtCursor(new Uint8Array([0]));
-        setIsMSN(true);
         return;
       }
       case CommandChar.InsertByteAfterCursor: {
         bufferCommands.insertAfterCursor(new Uint8Array([0]));
-        setIsMSN(true);
         return;
       }
     }
