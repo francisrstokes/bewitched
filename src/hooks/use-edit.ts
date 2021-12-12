@@ -45,7 +45,7 @@ export const useEdit = ({
         newBuffer[cursor] = (newBuffer[cursor] & 0xf0) | value;
         moveCursorRight();
       }
-			setBuffer(newBuffer);
+      setBuffer(newBuffer);
       setIsMSN(!isMSN);
       return;
     }
@@ -60,19 +60,19 @@ export const useEdit = ({
 
     if (key.delete || key.backspace) {
       bufferCommands.delete();
-			setIsMSN(true);
+      setIsMSN(true);
       return;
     }
 
     switch (input) {
       case CommandChar.InsertByteAtCursor: {
         bufferCommands.insertAtCursor(new Uint8Array([0]));
-				setIsMSN(true);
+        setIsMSN(true);
         return;
       }
       case CommandChar.InsertByteAfterCursor: {
         bufferCommands.insertAfterCursor(new Uint8Array([0]));
-				setIsMSN(true);
+        setIsMSN(true);
         return;
       }
     }
