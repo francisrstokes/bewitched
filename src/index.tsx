@@ -29,7 +29,7 @@ const App = () => {
     cursorCommands,
     bufferCommands,
     jumpToOffset,
-		setBuffer
+    setBuffer
   } = useBuffer();
 
   const [errorMsg, setErrorMsg] = useState('');
@@ -48,7 +48,7 @@ const App = () => {
 
   useEdit({
     buffer,
-		setBuffer,
+    setBuffer,
     bufferCommands,
     cursor,
     moveCursorRight: cursorCommands.right,
