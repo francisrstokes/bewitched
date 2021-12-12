@@ -38,7 +38,7 @@ export const useEdit = ({
   useInput((input, key) => {
     if (isHexChar(input)) {
       const value = parseInt(input, 16);
-			const newBuffer = buffer.slice();
+      const newBuffer = buffer.slice();
       if (isMSN) {
         newBuffer[cursor] = (value << 4) | (newBuffer[cursor] & 0x0f);
       } else {
