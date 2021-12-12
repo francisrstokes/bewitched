@@ -23,13 +23,14 @@ const inputFile = path.resolve(process.argv[2]);
 
 const App = () => {
   const {
-    buffer,
-    cursor,
-    offset,
-    cursorCommands,
-    bufferCommands,
-    jumpToOffset
-  } = useBuffer();
+		buffer,
+		cursor,
+		offset,
+		cursorCommands,
+		bufferCommands,
+		jumpToOffset,
+		setBuffer
+	} = useBuffer();
 
   const [errorMsg, setErrorMsg] = useState('');
   const [appState, setAppState] = useState<AppState>(AppState.Edit);
@@ -47,6 +48,7 @@ const App = () => {
 
   useEdit({
     buffer,
+    setBuffer,
     bufferCommands,
     cursor,
     moveCursorRight: cursorCommands.right,
@@ -59,17 +61,17 @@ const App = () => {
       <HexView buffer={buffer} offset={offset} cursor={cursor} />
       <Box flexDirection='column'>
         <Text>{'-'.repeat(SCREEN_W)}</Text>
-          {
-              appState === AppState.Edit
-              ? <StatusInfo buffer={buffer} cursor={cursor} />
-            : appState === AppState.Save
-              ?<SaveDialog buffer={buffer} openFilePath={inputFile} setErrorMsg={setErrorMsg} setAppState={setAppState} />
-            : appState === AppState.Jump
-              ? <JumpDialog jumpToOffsset={jumpToOffset} setAppState={setAppState} />
-            : appState === AppState.Error
-              ? <ErrorDialog error={errorMsg} setAppState={setAppState} />
-            : null
-          }
+        {
+						appState === AppState.Edit
+						? <StatusInfo buffer={buffer} cursor={cursor} />
+        	: appState === AppState.Save
+						?<SaveDialog buffer={buffer} openFilePath={inputFile} setErrorMsg={setErrorMsg} setAppState={setAppState} />
+        	: appState === AppState.Jump
+						? <JumpDialog jumpToOffsset={jumpToOffset} setAppState={setAppState} />
+        	: appState === AppState.Error
+						? <ErrorDialog error={errorMsg} setAppState={setAppState} />
+        	: null
+				}
         <Text>{'-'.repeat(SCREEN_W)}</Text>
       </Box>
     </Box>
