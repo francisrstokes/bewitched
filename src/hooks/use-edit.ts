@@ -16,7 +16,7 @@ type EditParams = {
   buffer: Uint8Array;
   bufferCommands: BufferCommands;
   moveCursorRight: () => void;
-	setBuffer: SetStateFn<Uint8Array>,
+  setBuffer: SetStateFn<Uint8Array>,
   setAppState: SetStateFn<AppState>;
   enabled: boolean;
 }
@@ -25,7 +25,7 @@ export const useEdit = ({
   moveCursorRight,
   bufferCommands,
   buffer,
-	setBuffer,
+  setBuffer,
   setAppState,
   enabled
 }: EditParams) => {
