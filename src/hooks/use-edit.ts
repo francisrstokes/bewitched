@@ -14,9 +14,9 @@ enum CommandChar {
 type EditParams = {
   cursor: number;
   buffer: Uint8Array;
-  setBuffer: SetStateFn<Uint8Array>;
   bufferCommands: BufferCommands;
   moveCursorRight: () => void;
+	setBuffer: SetStateFn<Uint8Array>,
   setAppState: SetStateFn<AppState>;
   enabled: boolean;
 }
@@ -25,7 +25,7 @@ export const useEdit = ({
   moveCursorRight,
   bufferCommands,
   buffer,
-  setBuffer,
+	setBuffer,
   setAppState,
   enabled
 }: EditParams) => {
@@ -36,49 +36,49 @@ export const useEdit = ({
   }, [cursor]);
 
   useInput((input, key) => {
-      if (isHexChar(input)) {
-        const value = parseInt(input, 16);
-        const newBuffer = buffer.slice();
-        if (isMSN) {
-          newBuffer[cursor] = (value << 4) | (newBuffer[cursor] & 0x0f);
-        } else {
-          newBuffer[cursor] = (newBuffer[cursor] & 0xf0) | value;
-          moveCursorRight();
-        }
-        setBuffer(newBuffer);
-        setIsMSN(!isMSN);
+    if (isHexChar(input)) {
+      const value = parseInt(input, 16);
+			const newBuffer = buffer.slice();
+      if (isMSN) {
+        newBuffer[cursor] = (value << 4) | (newBuffer[cursor] & 0x0f);
+      } else {
+        newBuffer[cursor] = (newBuffer[cursor] & 0xf0) | value;
+        moveCursorRight();
+      }
+			setBuffer(newBuffer);
+      setIsMSN(!isMSN);
+      return;
+    }
+
+    if (input === '?') {
+      return setAppState(AppState.Help);
+    }
+
+    if (input === 'j') {
+      return setAppState(AppState.Jump);
+    }
+
+    if (key.delete || key.backspace) {
+      bufferCommands.delete();
+			setIsMSN(true);
+      return;
+    }
+
+    switch (input) {
+      case CommandChar.InsertByteAtCursor: {
+        bufferCommands.insertAtCursor(new Uint8Array([0]));
+				setIsMSN(true);
         return;
       }
-
-      if (input === '?') {
-        return setAppState(AppState.Help);
-      }
-
-      if (input === 'j') {
-        return setAppState(AppState.Jump);
-      }
-
-      if (key.delete || key.backspace) {
-        bufferCommands.delete();
-        setIsMSN(true);
+      case CommandChar.InsertByteAfterCursor: {
+        bufferCommands.insertAfterCursor(new Uint8Array([0]));
+				setIsMSN(true);
         return;
       }
+    }
 
-      switch (input) {
-        case CommandChar.InsertByteAtCursor: {
-          bufferCommands.insertAtCursor(new Uint8Array([0]));
-          setIsMSN(true);
-          return;
-        }
-        case CommandChar.InsertByteAfterCursor: {
-          bufferCommands.insertAfterCursor(new Uint8Array([0]));
-          setIsMSN(true);
-          return;
-        }
-      }
-
-      if (key.ctrl && input === 's') {
-        return setAppState(AppState.Save);
-      }
-    }, {isActive: enabled});
+    if (key.ctrl && input === 's') {
+      return setAppState(AppState.Save);
+    }
+  }, {isActive: enabled});
 }
