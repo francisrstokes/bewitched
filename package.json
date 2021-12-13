@@ -1,6 +1,6 @@
 {
   "name": "bewitched",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "🧙🏻 Command line hex editor",
   "main": "bin/index.js",
   "bin": {
