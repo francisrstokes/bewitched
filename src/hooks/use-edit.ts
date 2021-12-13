@@ -37,9 +37,11 @@ export const useEdit = ({
     if (isHexChar(input)) {
       const value = parseInt(input, 16);
       if (isMSN) {
-        buffer[cursor] = (value << 4) | (buffer[cursor] & 0x0f);
+        const newByte = (value << 4) | (buffer[cursor] & 0x0f);
+        bufferCommands.updateAtCursor(newByte);
       } else {
-        buffer[cursor] = (buffer[cursor] & 0xf0) | value;
+        const newByte = (buffer[cursor] & 0xf0) | value;
+        bufferCommands.updateAtCursor(newByte);
         moveCursorRight();
       }
       setIsMSN(!isMSN);
