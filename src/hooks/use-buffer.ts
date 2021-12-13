@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { BYTES_PER_LINE, HEXVIEW_H } from "../utils";
 
 export type CursorCommands = {
@@ -9,6 +9,7 @@ export type CursorCommands = {
 };
 
 export type BufferCommands = {
+  updateAtCursor: (byte: number) => void;
   insertAtCursor: (bytes: Uint8Array) => void;
   insertAfterCursor: (bytes: Uint8Array) => void;
   delete: () => void;
@@ -19,7 +20,20 @@ const cursorIsVisible = (cursor: number, offset: number) => (
 );
 
 export const useBuffer = () => {
-  const [buffer, setBuffer] = useState(new Uint8Array(0));
+  // We'll use a ref instead of a state, because we don't want to create a new Uint8Array with
+  // every edit. And then we'll use a state to trigger the re-render whenever we mutate the buffer.
+  const bufferRef = useRef<Uint8Array>();
+  const [_, forceRender] = useState({});
+  if (!bufferRef.current) {
+    bufferRef.current = new Uint8Array(0);
+  }
+  // Just make the `useRef` workaround transparent in the rest of the codebase.
+  const buffer = bufferRef.current;
+  const setBuffer = (newBuffer: Uint8Array) => {
+    bufferRef.current = newBuffer;
+    forceRender({});
+  };
+
   const [cursor, setCursor] = useState(0);
   const [offset, setOffset] = useState(0);
 
@@ -57,6 +71,11 @@ export const useBuffer = () => {
       }
     },
   };
+
+  const updateAtCursor = (byte: number) => {
+    buffer[cursor] = byte;
+    setBuffer(buffer);
+  }
 
   const insertAtCursor = (bytes: Uint8Array) => {
     const newSize = buffer.byteLength + bytes.byteLength;
@@ -100,6 +119,7 @@ export const useBuffer = () => {
   };
 
   const bufferCommands: BufferCommands = {
+    updateAtCursor,
     insertAtCursor,
     insertAfterCursor,
     delete: deleteByte
@@ -107,7 +127,6 @@ export const useBuffer = () => {
 
   return {
     buffer,
-    setBuffer,
     cursor,
     setCursor,
     cursorCommands,
