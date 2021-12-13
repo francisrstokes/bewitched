@@ -16,7 +16,6 @@ type EditParams = {
   buffer: Uint8Array;
   bufferCommands: BufferCommands;
   moveCursorRight: () => void;
-  setBuffer: SetStateFn<Uint8Array>,
   setAppState: SetStateFn<AppState>;
   enabled: boolean;
 }
@@ -25,7 +24,6 @@ export const useEdit = ({
   moveCursorRight,
   bufferCommands,
   buffer,
-  setBuffer,
   setAppState,
   enabled
 }: EditParams) => {
@@ -33,19 +31,19 @@ export const useEdit = ({
 
   useEffect(() => {
     setIsMSN(true);
-  }, [cursor]);
+  }, [cursor, buffer]);
 
   useInput((input, key) => {
     if (isHexChar(input)) {
       const value = parseInt(input, 16);
-      const newBuffer = buffer.slice();
       if (isMSN) {
-        newBuffer[cursor] = (value << 4) | (newBuffer[cursor] & 0x0f);
+         const newByte = (value << 4) | (buffer[cursor] & 0x0f);
+         bufferCommands.updateAtCursor(newByte);
       } else {
-        newBuffer[cursor] = (newBuffer[cursor] & 0xf0) | value;
+        const newByte = (buffer[cursor] & 0xf0) | value;
+        bufferCommands.updateAtCursor(newByte);
         moveCursorRight();
       }
-      setBuffer(newBuffer);
       setIsMSN(!isMSN);
       return;
     }
@@ -60,19 +58,16 @@ export const useEdit = ({
 
     if (key.delete || key.backspace) {
       bufferCommands.delete();
-      setIsMSN(true);
       return;
     }
 
     switch (input) {
       case CommandChar.InsertByteAtCursor: {
         bufferCommands.insertAtCursor(new Uint8Array([0]));
-        setIsMSN(true);
         return;
       }
       case CommandChar.InsertByteAfterCursor: {
         bufferCommands.insertAfterCursor(new Uint8Array([0]));
-        setIsMSN(true);
         return;
       }
     }

@@ -9,6 +9,7 @@ export type CursorCommands = {
 };
 
 export type BufferCommands = {
+  updateAtCursor: (byte: number) => void;
   insertAtCursor: (bytes: Uint8Array) => void;
   insertAfterCursor: (bytes: Uint8Array) => void;
   delete: () => void;
@@ -71,6 +72,11 @@ export const useBuffer = () => {
     },
   };
 
+  const updateAtCursor = (byte: number) => {
+    buffer[cursor] = byte;
+    setBuffer(buffer);
+  }
+
   const insertAtCursor = (bytes: Uint8Array) => {
     const newSize = buffer.byteLength + bytes.byteLength;
     const newBuffer = new Uint8Array(newSize);
@@ -113,6 +119,7 @@ export const useBuffer = () => {
   };
 
   const bufferCommands: BufferCommands = {
+    updateAtCursor,
     insertAtCursor,
     insertAfterCursor,
     delete: deleteByte
@@ -120,7 +127,6 @@ export const useBuffer = () => {
 
   return {
     buffer,
-    setBuffer,
     cursor,
     setCursor,
     cursorCommands,
