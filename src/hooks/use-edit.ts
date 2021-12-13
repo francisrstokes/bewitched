@@ -37,8 +37,8 @@ export const useEdit = ({
     if (isHexChar(input)) {
       const value = parseInt(input, 16);
       if (isMSN) {
-         const newByte = (value << 4) | (buffer[cursor] & 0x0f);
-         bufferCommands.updateAtCursor(newByte);
+        const newByte = (value << 4) | (buffer[cursor] & 0x0f);
+        bufferCommands.updateAtCursor(newByte);
       } else {
         const newByte = (buffer[cursor] & 0xf0) | value;
         bufferCommands.updateAtCursor(newByte);
