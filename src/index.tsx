@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+<<<<<<< HEAD
 import React, {useEffect, useState} from 'react';
 import {render, Text, Box} from 'ink';
 import * as fs from 'fs/promises';
@@ -13,9 +14,26 @@ import { SaveDialog } from './components/SaveDialog';
 import { StatusInfo } from './components/StatusInfo';
 import { JumpDialog } from './components/JumpDialog';
 import { ErrorDialog } from './components/ErrorDialog';
+=======
+import React, { useEffect, useState } from "react";
+import { render, Text, Box } from "ink";
+import * as fs from "fs/promises";
+import * as path from "path";
+import { AppState, SCREEN_W } from "./utils";
+import { useBuffer } from "./hooks/use-buffer";
+import { useMovement } from "./hooks/use-movement";
+import { useEdit } from "./hooks/use-edit";
+import { useScroll } from "./hooks/use-scroll";
+import { HexView } from "./components/HexView";
+import { HelpScreen } from "./components/HelpScreen";
+import { SaveDialog } from "./components/SaveDialog";
+import { StatusInfo } from "./components/StatusInfo";
+import { JumpDialog } from "./components/JumpDialog";
+import { ErrorDialog } from "./components/ErrorDialog";
+>>>>>>> bfca694 (Fix #3: Added support for scroll wheel)
 
 if (process.argv.length < 3) {
-  console.log('Usage: betwitched <input file>');
+  console.log("Usage: betwitched <input file>");
   process.exit(1);
 }
 
@@ -28,22 +46,27 @@ const App = () => {
     offset,
     cursorCommands,
     bufferCommands,
-    jumpToOffset
+    jumpToOffset,
   } = useBuffer();
 
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState("");
   const [appState, setAppState] = useState<AppState>(AppState.Edit);
   const [alternateAddressMode, setAlternateAddressMode] = useState(AlternateAddressViewMode.Hex);
 
   useEffect(() => {
-    fs.readFile(inputFile).then(file => {
+    fs.readFile(inputFile).then((file) => {
       bufferCommands.insertAtCursor(new Uint8Array(file.buffer));
     });
   }, []);
 
   useMovement({
     cursorCommands,
-    enabled: appState === AppState.Edit
+    enabled: appState === AppState.Edit,
+  });
+
+  useScroll({
+    cursorCommands,
+    enabled: appState === AppState.Edit,
   });
 
   useEdit({
@@ -55,8 +78,10 @@ const App = () => {
     enabled: appState === AppState.Edit,
   });
 
-  return appState === AppState.Help ? <HelpScreen exit={() => setAppState(AppState.Edit)} /> : (
-    <Box flexDirection='column'>
+  return appState === AppState.Help ? (
+    <HelpScreen exit={() => setAppState(AppState.Edit)} />
+  ) : (
+    <Box flexDirection="column">
       <HexView buffer={buffer} offset={offset} cursor={cursor} />
       <Box flexDirection='column'>
         <Text>{'-'.repeat(SCREEN_W)}</Text>
