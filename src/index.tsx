@@ -1,36 +1,20 @@
 #!/usr/bin/env node
-<<<<<<< HEAD
-import React, {useEffect, useState} from 'react';
-import {render, Text, Box} from 'ink';
-import * as fs from 'fs/promises';
-import * as path from 'path';
-import { AlternateAddressViewMode, AppState, SCREEN_W } from './utils';
-import { useBuffer } from './hooks/use-buffer';
-import { useMovement } from './hooks/use-movement';
-import { useEdit } from './hooks/use-edit';
-import { HexView } from './components/HexView';
-import { HelpScreen } from './components/HelpScreen';
-import { SaveDialog } from './components/SaveDialog';
-import { StatusInfo } from './components/StatusInfo';
-import { JumpDialog } from './components/JumpDialog';
-import { ErrorDialog } from './components/ErrorDialog';
-=======
+
 import React, { useEffect, useState } from "react";
 import { render, Text, Box } from "ink";
 import * as fs from "fs/promises";
 import * as path from "path";
-import { AppState, SCREEN_W } from "./utils";
+import { AlternateAddressViewMode, AppState, SCREEN_W } from "./utils";
 import { useBuffer } from "./hooks/use-buffer";
 import { useMovement } from "./hooks/use-movement";
 import { useEdit } from "./hooks/use-edit";
-import { useScroll } from "./hooks/use-scroll";
 import { HexView } from "./components/HexView";
 import { HelpScreen } from "./components/HelpScreen";
 import { SaveDialog } from "./components/SaveDialog";
 import { StatusInfo } from "./components/StatusInfo";
 import { JumpDialog } from "./components/JumpDialog";
 import { ErrorDialog } from "./components/ErrorDialog";
->>>>>>> bfca694 (Fix #3: Added support for scroll wheel)
+import { useScroll } from "./hooks/use-scroll";
 
 if (process.argv.length < 3) {
   console.log("Usage: betwitched <input file>");
@@ -51,7 +35,9 @@ const App = () => {
 
   const [errorMsg, setErrorMsg] = useState("");
   const [appState, setAppState] = useState<AppState>(AppState.Edit);
-  const [alternateAddressMode, setAlternateAddressMode] = useState(AlternateAddressViewMode.Hex);
+  const [alternateAddressMode, setAlternateAddressMode] = useState(
+    AlternateAddressViewMode.Hex
+  );
 
   useEffect(() => {
     fs.readFile(inputFile).then((file) => {
@@ -83,25 +69,29 @@ const App = () => {
   ) : (
     <Box flexDirection="column">
       <HexView buffer={buffer} offset={offset} cursor={cursor} />
-      <Box flexDirection='column'>
-        <Text>{'-'.repeat(SCREEN_W)}</Text>
-          {
-              appState === AppState.Edit
-              ? <StatusInfo
-                  buffer={buffer}
-                  cursor={cursor}
-                  alternateAddressMode={alternateAddressMode}
-                  setAlternateAddressMode={setAlternateAddressMode}
-                />
-            : appState === AppState.Save
-              ?<SaveDialog buffer={buffer} openFilePath={inputFile} setErrorMsg={setErrorMsg} setAppState={setAppState} />
-            : appState === AppState.Jump
-              ? <JumpDialog jumpToOffsset={jumpToOffset} setAppState={setAppState} />
-            : appState === AppState.Error
-              ? <ErrorDialog error={errorMsg} setAppState={setAppState} />
-            : null
-          }
-        <Text>{'-'.repeat(SCREEN_W)}</Text>
+      <Box flexDirection="column">
+        <Text>{"-".repeat(SCREEN_W)}</Text>
+        {appState === AppState.Edit ? (
+          <StatusInfo
+            buffer={buffer}
+            cursor={cursor}
+            alternateAddressMode={alternateAddressMode}
+            setAlternateAddressMode={setAlternateAddressMode}
+          />
+        ) : appState === AppState.Save ? (
+          <SaveDialog
+            buffer={buffer}
+            openFilePath={inputFile}
+            setErrorMsg={setErrorMsg}
+            setAppState={setAppState}
+          />
+        ) : appState === AppState.Jump ? (
+          <JumpDialog jumpToOffsset={jumpToOffset} setAppState={setAppState} />
+        ) : appState === AppState.Error ? (
+          <ErrorDialog error={errorMsg} setAppState={setAppState} />
+        ) : null}
+
+        <Text>{"-".repeat(SCREEN_W)}</Text>
       </Box>
     </Box>
   );

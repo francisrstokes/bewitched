@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
-import * as Blessed from "blessed";
-import { CursorCommands } from "./use-buffer";
+import { useEffect, useRef } from 'react';
+import * as Blessed from 'blessed';
+import { CursorCommands } from './use-buffer';
 
 type ScrollParams = {
   cursorCommands: CursorCommands;
@@ -33,12 +33,12 @@ export const useScroll = ({ cursorCommands, enabled }: ScrollParams) => {
 
     const program = Blessed.program();
     program.enableMouse();
-    program.on("mouse", (event: any) => {
+    program.on('mouse', (event: any) => {
       switch (event.action) {
-        case "wheelup":
+        case 'wheelup':
           debouncedUp();
           break;
-        case "wheeldown":
+        case 'wheeldown':
           debouncedDown();
           break;
         default:

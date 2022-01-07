@@ -1,14 +1,14 @@
-import { useInput } from "ink";
-import { useEffect, useState } from "react";
-import { AppState, SetStateFn } from "../utils";
-import { BufferCommands } from "./use-buffer";
+import { useInput } from 'ink';
+import { useEffect, useState } from 'react';
+import { AppState, SetStateFn } from '../utils';
+import { BufferCommands } from './use-buffer';
 
 const hexRegex = /[0-9a-f]/;
 const isHexChar = (char: string) => hexRegex.test(char);
 
 enum CommandChar {
-  InsertByteAtCursor = "i",
-  InsertByteAfterCursor = "I",
+  InsertByteAtCursor = 'i',
+  InsertByteAfterCursor = 'I',
 }
 
 type EditParams = {
@@ -52,11 +52,11 @@ export const useEdit = ({
         return;
       }
 
-      if (input === "?") {
+      if (input === '?') {
         return setAppState(AppState.Help);
       }
 
-      if (input === "j") {
+      if (input === 'j') {
         return setAppState(AppState.Jump);
       }
 
@@ -76,7 +76,7 @@ export const useEdit = ({
         }
       }
 
-      if (key.ctrl && input === "s") {
+      if (key.ctrl && input === 's') {
         return setAppState(AppState.Save);
       }
     },

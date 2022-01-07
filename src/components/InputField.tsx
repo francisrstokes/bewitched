@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useInput, Text, Box } from "ink";
+import React, { useState } from 'react';
+import { useInput, Text, Box } from 'ink';
 
 const isValidInput = (inp: string) => !!parseInt(inp, 16);
 
@@ -12,8 +12,8 @@ type InputFieldProps = {
   mask?: RegExp;
 };
 export const InputField = ({
-  label = "",
-  initialValue = "",
+  label = '',
+  initialValue = '',
   onEnter = () => void 0,
   onChange = () => void 0,
   onEscape = () => void 0,
@@ -53,7 +53,7 @@ export const InputField = ({
 
     if (key.return) return onEnter(value);
 
-    if (input !== "") {
+    if (input !== '') {
       const part1 = value.slice(0, cursor);
       const part2 = value.slice(cursor);
       const newValue = part1 + input + part2;
@@ -68,7 +68,7 @@ export const InputField = ({
     }
   });
 
-  const textComponents = value.split("").map((char, i) => {
+  const textComponents = value.split('').map((char, i) => {
     if (i === cursor) {
       return (
         <Text key={`${char}_${i}`} backgroundColor="white" color="black">
@@ -85,7 +85,7 @@ export const InputField = ({
       {textComponents}
       {cursor === value.length ? (
         <Text backgroundColor="white" color="black">
-          {" "}
+          {' '}
         </Text>
       ) : null}
     </Box>
