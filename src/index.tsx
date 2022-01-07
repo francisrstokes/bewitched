@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {render, Text, Box} from 'ink';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { AppState, SCREEN_W } from './utils';
+import { AlternateAddressViewMode, AppState, SCREEN_W } from './utils';
 import { useBuffer } from './hooks/use-buffer';
 import { useMovement } from './hooks/use-movement';
 import { useEdit } from './hooks/use-edit';
@@ -33,6 +33,7 @@ const App = () => {
 
   const [errorMsg, setErrorMsg] = useState('');
   const [appState, setAppState] = useState<AppState>(AppState.Edit);
+  const [alternateAddressMode, setAlternateAddressMode] = useState(AlternateAddressViewMode.Hex);
 
   useEffect(() => {
     fs.readFile(inputFile).then(file => {
@@ -61,7 +62,12 @@ const App = () => {
         <Text>{'-'.repeat(SCREEN_W)}</Text>
           {
               appState === AppState.Edit
-              ? <StatusInfo buffer={buffer} cursor={cursor} />
+              ? <StatusInfo
+                  buffer={buffer}
+                  cursor={cursor}
+                  alternateAddressMode={alternateAddressMode}
+                  setAlternateAddressMode={setAlternateAddressMode}
+                />
             : appState === AppState.Save
               ?<SaveDialog buffer={buffer} openFilePath={inputFile} setErrorMsg={setErrorMsg} setAppState={setAppState} />
             : appState === AppState.Jump

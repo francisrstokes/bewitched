@@ -14,3 +14,8 @@ export enum AppState {
   Jump  = 'Jump',
   Error = 'Error',
 };
+
+export enum AlternateAddressViewMode {
+  Hex,
+  Decimal
+};

@@ -4,7 +4,9 @@ import { Box, Text, useInput } from "ink";
 type HelpScreenProps = { exit: () => void; }
 export const HelpScreen = ({ exit }: HelpScreenProps) => {
   useInput((_, key) => {
-    if (key.escape) exit();
+    if (key.escape) {
+      exit();
+    }
   });
 
   const helpItems: Array<[string, string]> = [
@@ -14,6 +16,8 @@ export const HelpScreen = ({ exit }: HelpScreenProps) => {
     ['i            ', ' Insert a zero byte before the cursor'],
     ['I            ', ' Insert a zero byte after the cursor'],
     ['j            ', ' Jump to a specific offset in the file'],
+    ['v            ', ' Switch the address display in the status line between hex'],
+    ['             ', ' and decimal'],
     ['Ctrl+S       ', ' Save this file'],
     ['Esc          ', ' Exit any menu'],
     ['?            ', ' Show this help menu'],
