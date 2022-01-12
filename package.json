@@ -8,16 +8,21 @@
   },
   "scripts": {
     "build": "tsc && chmod +x ./bin/index.js",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "create-sample": "ts-node generate-bin.ts 5000 example-bin",
+    "dev": "ts-node src/index.tsx example-bin"
   },
   "keywords": [],
   "author": "Francis Stokes",
   "license": "MIT",
   "dependencies": {
+    "blessed": "^0.1.81",
     "ink": "^3.2.0",
     "react": "^17.0.2"
   },
   "devDependencies": {
+    "@types/blessed": "^0.1.19",
+    "@types/node": "^17.0.7",
     "@types/react": "^17.0.37",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.2"

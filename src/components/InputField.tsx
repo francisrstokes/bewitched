@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { useInput, Text, Box } from "ink";
+import React, { useState } from 'react';
+import { useInput, Text, Box } from 'ink';
+
+const isValidInput = (inp: string) => !!parseInt(inp, 16);
 
 type InputFieldProps = {
   onEnter?: (data: string) => void | Promise<void>;
@@ -8,14 +10,14 @@ type InputFieldProps = {
   initialValue?: string;
   label?: string;
   mask?: RegExp;
-}
+};
 export const InputField = ({
   label = '',
   initialValue = '',
   onEnter = () => void 0,
   onChange = () => void 0,
   onEscape = () => void 0,
-  mask
+  mask,
 }: InputFieldProps) => {
   const [value, setValue] = useState(initialValue);
   const [cursor, setCursor] = useState(initialValue.length);
@@ -28,6 +30,8 @@ export const InputField = ({
         setCursor(0);
         return;
       }
+
+      if (!isValidInput(input)) return;
 
       const part1 = value.slice(0, cursor - 1);
       const part2 = value.slice(cursor);
@@ -47,7 +51,7 @@ export const InputField = ({
     if (key.rightArrow) return setCursor(Math.min(value.length, cursor + 1));
     if (key.upArrow || key.downArrow) return;
 
-    if (key.return) return onEnter(value);;
+    if (key.return) return onEnter(value);
 
     if (input !== '') {
       const part1 = value.slice(0, cursor);
@@ -66,14 +70,24 @@ export const InputField = ({
 
   const textComponents = value.split('').map((char, i) => {
     if (i === cursor) {
-      return <Text key={`${char}_${i}`} backgroundColor='white' color='black'>{char}</Text>;
+      return (
+        <Text key={`${char}_${i}`} backgroundColor="white" color="black">
+          {char}
+        </Text>
+      );
     }
     return <Text key={`${char}_${i}`}>{char}</Text>;
   });
 
-  return <Box>
-    <Text>{label}</Text>
-    {textComponents}
-    {cursor === value.length ? <Text backgroundColor='white' color='black'> </Text> : null}
-  </Box>;
+  return (
+    <Box>
+      <Text>{label}</Text>
+      {textComponents}
+      {cursor === value.length ? (
+        <Text backgroundColor="white" color="black">
+          {' '}
+        </Text>
+      ) : null}
+    </Box>
+  );
 };
