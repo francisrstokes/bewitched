@@ -15,6 +15,10 @@ export type BufferCommands = {
   delete: () => void;
 };
 
+export type SearchCommands = {
+  searchForSequence: (bytes: Uint8Array) => boolean;
+}
+
 const cursorIsVisible = (cursor: number, offset: number) => (
   cursor >= offset && cursor < (offset + HEXVIEW_H * BYTES_PER_LINE)
 );
@@ -118,6 +122,26 @@ export const useBuffer = () => {
     setCursor(Math.min(buffer.byteLength - 1, jumpOffset));
   };
 
+  const searchForSequence = (search: Uint8Array) => {
+    for (let bi = 0; bi < buffer.byteLength; bi++) {
+      let found = true;
+
+      for (let si = 0; si < search.byteLength; si++) {
+        if (buffer[bi + si] !== search[si]) {
+          found = false;
+          break;
+        }
+      }
+
+      if (found) {
+        jumpToOffset(bi);
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   const bufferCommands: BufferCommands = {
     updateAtCursor,
     insertAtCursor,
@@ -125,12 +149,17 @@ export const useBuffer = () => {
     delete: deleteByte
   };
 
+  const searchCommands: SearchCommands = {
+    searchForSequence
+  }
+
   return {
     buffer,
     cursor,
     setCursor,
     cursorCommands,
     bufferCommands,
+    searchCommands,
     offset,
     jumpToOffset,
   };

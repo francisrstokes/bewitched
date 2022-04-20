@@ -13,6 +13,7 @@ export const HelpScreen = ({ exit }: HelpScreenProps) => {
     ['←↑↓→         ', ' Move the cursor'],
     ['[a-f0-9]     ', ' Edit the currently selected byte'],
     ['Del/Backspace', ' Delete the currently selected byte'],
+    ['/            ', ' Search for the next occurrence of a byte sequence'],
     ['i            ', ' Insert a zero byte before the cursor'],
     ['I            ', ' Insert a zero byte after the cursor'],
     ['j            ', ' Jump to a specific offset in the file'],

@@ -13,6 +13,7 @@ import { SaveDialog } from './components/SaveDialog';
 import { StatusInfo } from './components/StatusInfo';
 import { JumpDialog } from './components/JumpDialog';
 import { ErrorDialog } from './components/ErrorDialog';
+import { SearchDialog } from './components/SearchDialog';
 
 if (process.argv.length < 3) {
   console.log('Usage: betwitched <input file>');
@@ -28,6 +29,7 @@ const App = () => {
     offset,
     cursorCommands,
     bufferCommands,
+    searchCommands,
     jumpToOffset
   } = useBuffer();
 
@@ -49,6 +51,7 @@ const App = () => {
   useEdit({
     buffer,
     bufferCommands,
+    searchCommands,
     cursor,
     moveCursorRight: cursorCommands.right,
     setAppState,
@@ -72,6 +75,8 @@ const App = () => {
               ?<SaveDialog buffer={buffer} openFilePath={inputFile} setErrorMsg={setErrorMsg} setAppState={setAppState} />
             : appState === AppState.Jump
               ? <JumpDialog jumpToOffsset={jumpToOffset} setAppState={setAppState} />
+            : appState === AppState.Search
+              ? <SearchDialog searchForSequence={searchCommands.searchForSequence} setAppState={setAppState} />
             : appState === AppState.Error
               ? <ErrorDialog error={errorMsg} setAppState={setAppState} />
             : null
