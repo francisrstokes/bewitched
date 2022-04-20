@@ -1,7 +1,7 @@
 import { useInput } from 'ink';
 import { useEffect, useState } from "react";
 import { AppState, SetStateFn } from '../utils';
-import { BufferCommands } from './use-buffer';
+import { BufferCommands, SearchCommands } from './use-buffer';
 
 const hexRegex = /[0-9a-f]/;
 const isHexChar = (char: string) => hexRegex.test(char);
@@ -15,6 +15,7 @@ type EditParams = {
   cursor: number;
   buffer: Uint8Array;
   bufferCommands: BufferCommands;
+  searchCommands: SearchCommands;
   moveCursorRight: () => void;
   setAppState: SetStateFn<AppState>;
   enabled: boolean;
@@ -23,6 +24,7 @@ export const useEdit = ({
   cursor,
   moveCursorRight,
   bufferCommands,
+  searchCommands,
   buffer,
   setAppState,
   enabled
@@ -54,6 +56,10 @@ export const useEdit = ({
 
     if (input === 'j') {
       return setAppState(AppState.Jump);
+    }
+
+    if (input === '/') {
+      return setAppState(AppState.Search);
     }
 
     if (key.delete || key.backspace) {
