@@ -34,12 +34,20 @@ export const HexView = ({ buffer, cursor, offset: startOffset }: HexViewProps) =
     }
 
     const bytesComponent = <Box>{bytes}</Box>;
-    const asciiComponent = <Text>|{slice.map(byte => {
-      if (byte >= 0x20 && byte < 0x7f) {
-        return String.fromCharCode(byte);
-      }
-      return '.';
-    }).join('').padEnd(BYTES_PER_LINE, '.')}|</Text>;
+    const asciiComponent = <Box>
+      <Text>|</Text>
+      {slice.map((byte, i) => {
+        const char = (byte >= 0x20 && byte < 0x7f)
+          ? String.fromCharCode(byte)
+          : '.';
+
+        if (offset + i === cursor) {
+          return <Text backgroundColor='white' color='black'>{char}</Text>
+        }
+        return <Text>{char}</Text>
+      })}
+      <Text>|</Text>
+    </Box>;
 
     lines.push(<Box key={offset}>{offsetComponent}{bytesComponent}{asciiComponent}</Box>);
   }
